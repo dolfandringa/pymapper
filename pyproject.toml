@@ -23,6 +23,8 @@ flake8 = "^4.0.1"
 Sphinx = "^4.4.0"
 myst-parser = "^0.17.0"
 sphinx-rtd-theme = "^1.0.0"
+pytest-pylint = "^0.18.0"
+pytest-flake8 = "^1.1.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -32,4 +34,4 @@ build-backend = "poetry.core.masonry.api"
 preview = true
 
 [tool.pytest.ini_options]
-addopts = "--cov=pymapper --cov-report=term-missing"
+addopts = "--cov=pymapper --cov-report=term-missing --flake8 --pylint --pylint-rcfile=setup.cfg"
