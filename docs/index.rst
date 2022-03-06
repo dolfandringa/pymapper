@@ -7,7 +7,7 @@ Welcome to pymapper
 ===================
 
 .. toctree::
-   :maxdepth: 1
+   :titlesonly:
 
    Getting started<readme_link>
 
