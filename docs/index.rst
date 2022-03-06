@@ -9,6 +9,8 @@ Welcome to pymapper
 .. toctree::
    :maxdepth: 1
 
+   Getting started<readme_link>
+
 API docs
 ========
 

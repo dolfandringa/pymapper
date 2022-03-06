@@ -46,7 +46,7 @@ html_sidebars = {
 intersphinx_mapping = {
     "cairo": (
         "https://pycairo.readthedocs.io/en/stable",
-        "https://pycairo.readthedocs.io/en/stable/objects.inv"
+        "https://pycairo.readthedocs.io/en/stable/objects.inv",
     ),
     "geopandas": (
         "https://geopandas.org/en/stable",
@@ -63,6 +63,10 @@ intersphinx_mapping = {
     "matplotlib": (
         "https://matplotlib.org/stable/",
         "https://matplotlib.org/stable/objects.inv",
+    ),
+    "owslib": (
+        "https://geopython.github.io/OWSLib/",
+        "https://geopython.github.io/OWSLib/objects.inv",
     ),
     "pyepsg": (
         "https://pyepsg.readthedocs.io/en/stable/",
