@@ -34,4 +34,4 @@ build-backend = "poetry.core.masonry.api"
 preview = true
 
 [tool.pytest.ini_options]
-addopts = "--cov=pymapper --cov-report=term-missing --flake8 --pylint --pylint-rcfile=setup.cfg"
+addopts = "--cov=pymapper --cov-report=xml --flake8 --pylint --pylint-rcfile=setup.cfg"
