@@ -30,3 +30,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 preview = true
+
+[tool.pytest.ini_options]
+addopts = "--cov=pymapper --cov-report=term-missing"

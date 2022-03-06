@@ -20,27 +20,57 @@ class ImageTransformation:  # pylint: disable=R0902
         extenty (float): the map y extent in user coordinate space
         bbox (tuple): (xmin,ymin,xmax,ymax) tuple for the map extent
             in user coordinate space
+        width (int): Image width in pixels
+        height (int): Image height in pixels
 
     """
 
-    def __init__(  # pylint: disable=C0103,R0913
-        self,
-        xx: float,
-        xy: float,
-        x0: float,
-        yx: float,
-        yy: float,
-        y0: float,
-        extentx: float,
-        extenty: float,
-        bbox: tuple,
+    def __init__(  # pylint: disable=C0103,R0913,R0914
+        self, bbox, width, height, marginx=0.2, marginy=0.2
     ):
-        """Initialize the class.
+        """Iitialize the class to map a coordinate system to the
+        canonical coordinate system of a target map image.
+        The target image is assumed to have the (0,0) origin at the top left.
 
         Args:
-            The class attributes to initialize
-
+            bbox (tuple): The bounding box in the format (minx, miny, maxx, maxy)
+                of the map.
+            width (int): The width in pixels of the target image
+            height (int): The height in pixels of the target image
+            marginx (float): A margin in the x direction (between 0 and 1) to give to
+                the image around the data
+            marginy (float): A margin in the y direction (between 0 and 1) to give to
+                the image around the data
         """
+        minx, miny, maxx, maxy = bbox
+
+        hratio = height / width
+        vratio = width / height
+        offsetx = (maxx - minx) * marginx
+        offsety = (maxy - miny) * marginy
+        extentx = maxx - minx + offsetx * 2
+        extenty = maxy - miny + offsety * 2
+        if extentx * hratio > extenty:
+            new_extenty = extentx * hratio
+            offsety += (new_extenty - extenty) / 2
+            extenty = new_extenty
+        else:
+            new_extentx = extenty * vratio
+            offsetx += (new_extentx - extentx) / 2
+            extentx = new_extentx
+        scalex = width / extentx
+        scaley = height / extenty
+        originx = minx - offsetx
+        originy = miny - offsety
+        bbox = ((originx, originy, originx + extentx, originy + extenty),)
+
+        xx = scalex
+        xy = 0
+        x0 = -originx * scalex
+        yx = 0
+        yy = -scaley
+        y0 = originy * scaley + height
+
         self.xx = xx  # pylint: disable=C0103
         self.xy = xy  # pylint: disable=C0103
         self.x0 = x0  # pylint: disable=C0103
@@ -50,6 +80,8 @@ class ImageTransformation:  # pylint: disable=R0902
         self.extentx = extentx
         self.extenty = extenty
         self.bbox = bbox
+        self.width = width
+        self.height = height
 
     def get_cairo_matrix(self):
         """Get arguments for :class:`cairo.Matrix`
@@ -81,56 +113,3 @@ class ImageTransformation:  # pylint: disable=R0902
             self.x0,
             self.y0,
         ]
-
-    @staticmethod
-    # pylint: disable=R0914
-    def create_for_map(bbox, width, height, marginx=0.2, marginy=0.2):
-        """Create a :class:`ImageTransformation` to map a coordinate system to the
-        canonical coordinate system of a target map image. The target image is assumed
-        to have the (0,0) origin at the top left.
-
-        Args:
-            bbox (tuple): The bounding box in the format (minx, miny, maxx, maxy)
-                of the map.
-            width (int): The width in pixels of the target image
-            height (int): The height in pixels of the target image
-            marginx (float): A margin in the x direction (between 0 and 1) to give to
-                the image around the data
-            marginy (float): A margin in the y direction (between 0 and 1) to give to
-                the image around the data
-
-        Returns:
-            :class:`ImageTransformation`
-
-        """
-        minx, miny, maxx, maxy = bbox
-
-        hratio = height / width
-        vratio = width / height
-        offsetx = (maxx - minx) * marginx
-        offsety = (maxy - miny) * marginy
-        extentx = maxx - minx + offsetx * 2
-        extenty = maxy - miny + offsety * 2
-        if extentx * hratio > extenty:
-            new_extenty = extentx * hratio
-            offsety += (new_extenty - extenty) / 2
-            extenty = new_extenty
-        else:
-            new_extentx = extenty * vratio
-            offsetx += (new_extentx - extentx) / 2
-            extentx = new_extentx
-        scalex = width / extentx
-        scaley = height / extenty
-        originx = minx - offsetx
-        originy = miny - offsety
-        return ImageTransformation(
-            xx=scalex,
-            xy=0,
-            x0=-originx * scalex,
-            yx=0,
-            yy=-scaley,
-            y0=originy * scaley + height,
-            extentx=extentx,
-            extenty=extenty,
-            bbox=(originx, originy, originx + extentx, originy + extenty),
-        )
