@@ -4,13 +4,10 @@ pymapper package
 Submodules
 ----------
 
-pymapper.transformation module
-------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: pymapper.transformation
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   pymapper.transformation
 
 Module contents
 ---------------

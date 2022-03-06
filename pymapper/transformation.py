@@ -9,6 +9,25 @@ class ImageTransformation:  # pylint: disable=R0902
         x_new = xx * x + xy * y + x0
         y_new = yx * x + yy * y + y0
 
+    The transformation is used to transform any coordinate system into the canonical
+    coordinate system for a target map image. The target image has ``width`` and
+    ``height`` in pixels, and is assumed to have its origin (0,0) at the top left.
+
+    The ``extentx`` and ``extenty`` are calculated to first add respectively ``marginx``
+    and ``marginy`` and then one of the extents is expanded so the final extents match
+    the ``width/height`` ratio of the image. The actual bounding box (``bbox``) is then
+    based on these extents.
+
+    Args:
+        bbox (tuple): The bounding box in the format (minx, miny, maxx, maxy)
+            of the input data.
+        width (int): The width in pixels of the target image
+        height (int): The height in pixels of the target image
+        marginx (float): A margin in the x direction (between 0 and 1) to give to
+            the image around the data (default 0.2)
+        marginy (float): A margin in the y direction (between 0 and 1) to give to
+            the image around the data (default 0.2)
+
     Attributes:
         xx (float): cairo `xx` parameter, or shapely `a` parameter
         xy (float): cairo `xy` parameter, or shapely `b` parameter
@@ -16,10 +35,13 @@ class ImageTransformation:  # pylint: disable=R0902
         yx (float): cairo `yx` parameter, or shapely `d` parameter
         yy (float): cairo `yy` parameter, or shapely `e` parameter
         y0 (float): cairo `y0` parameter, or shapely `yoff` parameter
-        extentx (float): the map x extent in user coordinate space
-        extenty (float): the map y extent in user coordinate space
+        extentx (float): the map x extent in user coordinate space after adding
+            ``marginx`` and adjusting for the width/height ratio of the image.
+        extenty (float): the map y extent in user coordinate space after adding
+            ``marginy`` and adjusting for the width/height ratio of the image.
         bbox (tuple): (xmin,ymin,xmax,ymax) tuple for the map extent
-            in user coordinate space
+            in user coordinate space. This is the actual bbox based on ``extentx`` and
+            ``extenty``
         width (int): Image width in pixels
         height (int): Image height in pixels
 
@@ -28,20 +50,7 @@ class ImageTransformation:  # pylint: disable=R0902
     def __init__(  # pylint: disable=C0103,R0913,R0914
         self, bbox, width, height, marginx=0.2, marginy=0.2
     ):
-        """Iitialize the class to map a coordinate system to the
-        canonical coordinate system of a target map image.
-        The target image is assumed to have the (0,0) origin at the top left.
-
-        Args:
-            bbox (tuple): The bounding box in the format (minx, miny, maxx, maxy)
-                of the map.
-            width (int): The width in pixels of the target image
-            height (int): The height in pixels of the target image
-            marginx (float): A margin in the x direction (between 0 and 1) to give to
-                the image around the data
-            marginy (float): A margin in the y direction (between 0 and 1) to give to
-                the image around the data
-        """
+        """Initialize the class."""
         minx, miny, maxx, maxy = bbox
 
         hratio = height / width
@@ -84,10 +93,10 @@ class ImageTransformation:  # pylint: disable=R0902
         self.height = height
 
     def get_cairo_matrix(self):
-        """Get arguments for :class:`cairo.Matrix`
+        """Get :class:`cairo.Matrix` version of this transformation.
 
         Returns:
-            cairo.Matrix: keys are xx, xy, x0, yx, yy and y0
+            cairo.Matrix: keys are ``xx``, ``xy``, ``x0``, ``yx``, ``yy`` and ``y0``
         """
         return cairo.Matrix(
             xx=self.xx,
@@ -103,7 +112,8 @@ class ImageTransformation:  # pylint: disable=R0902
         `matrix` argument.
 
         Returns:
-            list: [a, b, d, e, xoff, yoff]
+            list: [``self.xx``, ``self.xy``, ``self.yx``, ``self.yy``, ``self.x0``,
+            ``self.y0``]
         """
         return [
             self.xx,
