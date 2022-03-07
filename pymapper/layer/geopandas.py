@@ -10,9 +10,11 @@ class GeoPandasLayer(BaseLayer):  # pylint: disable=R0903
     """Vector layer based on :class:`geopandas.GeoDataFrame`.
 
     Args:
+        name (str): "The layer name."
         data (:class:`geopandas.GeoDataFrame`): The data to use.
 
     Attributes:
+        name (str): "The layer name."
         data (:class:`geopandas.GeoDataFrame`): The data for the layer. The data
             may be modified in-place, so pass a copy if you don't want that.
     """
