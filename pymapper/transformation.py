@@ -107,6 +107,13 @@ class ImageTransformation:  # pylint: disable=R0902
             y0=self.y0,
         )
 
+    def __eq__(self, other):
+        """Test equality."""
+        keys = {
+            "xx", "xy", "x0", "yx", "yy", "y0", "extentx", "extenty", "width", "height"
+            }
+        return all(getattr(self, key) == getattr(other, key) for key in keys)
+
     def get_shapely_matrix(self):
         """Get arguments for :func:`shapely.affinity.affine_transform`
         `matrix` argument.

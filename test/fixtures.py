@@ -1,4 +1,24 @@
 from pytest import fixture
+from geopandas import GeoDataFrame, GeoSeries
+
+
+@fixture
+def gpdata():
+    """Test geopandas GeoDataFrame data."""
+    geom = GeoSeries.from_wkt([
+        "POINT (163.85316 -17.31631)",
+        "POINT (34.75299 -6.25773)",
+        "POINT (-12.13783 24.29117)",
+        "POINT (-98.14238 61.46908)",
+        "POINT (-112.59944 45.70563)"
+    ])
+    gdf = GeoDataFrame({
+        "geometry": geom,
+        "a": [1, 2, 3, 4, 5],
+        "b": ["a", "b", "c" , "d", "e"],
+        })
+    gdf.set_crs(epsg='4326', inplace=True)
+    return gdf
 
 
 @fixture

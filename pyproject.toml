@@ -35,3 +35,7 @@ preview = true
 
 [tool.pytest.ini_options]
 addopts = "--cov=pymapper --cov-report=xml --flake8 --pylint --pylint-rcfile=setup.cfg"
+
+[tool.pyright]
+reportUnusedImport = false
+reportUnusedClass = false

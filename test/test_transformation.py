@@ -18,6 +18,14 @@ def test_create_transformation(transformation):  # pylint: disable=R0914
     assert trans.extenty == extenty
 
 
+def test_equality(transformation):
+    """Test object equality."""
+    _, _, _, bbox, width, height, marginx, marginy = transformation
+    trans = ImageTransformation(bbox, width, height, marginx, marginy)
+    trans2 = ImageTransformation(bbox, width, height, marginx, marginy)
+    assert trans == trans2
+
+
 def test_create_transformation_portrait(transformation_port):  # pylint: disable=R0914
     """Test ImageTransformation.get_cairo_matrix."""
     (matrix, extentx, extenty, bbox, width, height,
